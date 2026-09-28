@@ -7,7 +7,7 @@ The goal is to demonstrate practical Azure administration, networking, Linux, tr
 ## Project Status
 
 **Current phase:** Application deployment to Azure VMs  
-**Overall progress:** approximately 60%
+**Overall progress:** approximately 62%
 
 ### Completed
 
@@ -32,11 +32,13 @@ The goal is to demonstrate practical Azure administration, networking, Linux, tr
 - [x] Deployed `vm-olu-web-02` in Availability Zone 2
 - [x] Verified both VMs are running in separate Availability Zones
 - [x] Installed Python, Git, Flask dependencies and Gunicorn on `vm-olu-web-01`
+- [x] Started Gunicorn on `vm-olu-web-01` and verified `/health` returns `healthy`
 
 ### In Progress / Next
 
 - [ ] Install the application dependencies on `vm-olu-web-02`
-- [ ] Run the Flask application through Gunicorn on both Linux VMs
+- [ ] Start Gunicorn on `vm-olu-web-02` and verify `/health`
+- [ ] Configure persistent systemd services on both Linux VMs
 - [ ] Configure Gunicorn/systemd
 - [ ] Create a Standard Public IP
 - [ ] Create an Azure Standard Load Balancer
