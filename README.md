@@ -53,6 +53,7 @@ The goal is to demonstrate practical Azure administration, networking, Linux, tr
   - [x] Created Log Analytics workspace `law-olu-ha` in UK South with 30-day retention
   - [x] Enabled system-assigned managed identities on both backend VMs
   - [x] Azure Monitor Agent installed on both backend VMs
+  - [x] Created Data Collection Rule `dcr-olu-ha` for performance counters and Syslog
 - [ ] Rebuild the infrastructure using Terraform
 - [ ] Add GitHub Actions CI/CD
 - [ ] Complete final architecture and deployment documentation
