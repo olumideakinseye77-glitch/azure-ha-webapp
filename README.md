@@ -49,7 +49,7 @@ The goal is to demonstrate practical Azure administration, networking, Linux, tr
 - [x] Configured load-balancing rule `rule-http` from frontend port `80` to backend port `8000`
 - [x] Verified application availability through the Load Balancer public IP
 - [x] Deallocated `vm-olu-web-01` and proved successful failover through the Load Balancer to `vm-olu-web-02`
-- [ ] Add Azure Monitor / logging
+- [x] Add Azure Monitor / logging
   - [x] Created Log Analytics workspace `law-olu-ha` in UK South with 30-day retention
   - [x] Enabled system-assigned managed identities on both backend VMs
   - [x] Azure Monitor Agent installed on both backend VMs
@@ -57,7 +57,8 @@ The goal is to demonstrate practical Azure administration, networking, Linux, tr
   - [x] Associated `dcr-olu-ha` with both backend VMs
   - [x] Verified Azure Monitor Agent heartbeats from both backend VMs in Log Analytics
   - [x] Corrected Linux performance counter definitions in `dcr-olu-ha`
-  - [ ] Verify `Perf` records for CPU, memory and disk
+  - [x] Verified Azure Monitor Heartbeat and Syslog ingestion from both backend VMs
+  - [ ] `Perf` records remain pending verification and are documented as a monitoring troubleshooting item
 - [ ] Rebuild the infrastructure using Terraform
 - [ ] Add GitHub Actions CI/CD
 - [ ] Complete final architecture and deployment documentation
@@ -375,6 +376,23 @@ This proved that the Azure Load Balancer health probe removed the unavailable ba
 This test demonstrates actual application resilience rather than simply deploying duplicate virtual machines.
 
 VM-01 was then restarted and the `olu-ha-webapp` systemd service was verified as `active`, with `/health` returning `healthy`. This confirmed that the application automatically recovers after a VM restart.
+
+---
+
+## Monitoring Verification
+
+Azure Monitor Agent connectivity was verified using the `Heartbeat` table for both backend VMs.
+
+Syslog ingestion was verified from both backend VMs in Log Analytics:
+
+```text
+vm-olu-web-01 -> Syslog records present
+vm-olu-web-02 -> Syslog records present
+```
+
+This confirms that the AMA -> DCR -> Log Analytics pipeline is functioning end to end.
+
+The `Perf` table remained empty after the Linux performance-counter definitions were corrected. This is retained as an observability troubleshooting item rather than a blocker to the HA application itself.
 
 ---
 
