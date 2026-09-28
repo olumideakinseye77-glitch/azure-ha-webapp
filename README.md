@@ -7,7 +7,7 @@ The goal is to demonstrate practical Azure administration, networking, Linux, tr
 ## Project Status
 
 **Current phase:** Application deployment to Azure VMs  
-**Overall progress:** approximately 77%
+**Overall progress:** approximately 80%
 
 ### Completed
 
@@ -43,7 +43,7 @@ The goal is to demonstrate practical Azure administration, networking, Linux, tr
 - [x] Both Availability Zone backends now run the app persistently and return `healthy`
 - [ ] Configure Gunicorn/systemd
 - [x] Created zone-redundant Standard static Public IP `pip-olu-ha-lb`
-- [ ] Create an Azure Standard Load Balancer
+- [x] Created Azure Standard Load Balancer `lb-olu-ha` with frontend `fe-olu-ha` and backend pool `be-olu-ha`
 - [ ] Create the backend pool
 - [ ] Configure the HTTP `/health` probe
 - [ ] Configure the load-balancing rule
