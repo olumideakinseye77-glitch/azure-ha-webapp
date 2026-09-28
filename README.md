@@ -7,7 +7,7 @@ The goal is to demonstrate practical Azure administration, networking, Linux, tr
 ## Project Status
 
 **Current phase:** Application deployment to Azure VMs  
-**Overall progress:** approximately 88%
+**Overall progress:** approximately 93%
 
 ### Completed
 
@@ -47,7 +47,7 @@ The goal is to demonstrate practical Azure administration, networking, Linux, tr
 - [x] Attached both VM NICs to backend pool `be-olu-ha`
 - [x] Configured HTTP health probe `probe-olu-health` on port `8000` and path `/health`
 - [x] Configured load-balancing rule `rule-http` from frontend port `80` to backend port `8000`
-- [ ] Test application availability through the Load Balancer
+- [x] Verified application availability through the Load Balancer public IP
 - [ ] Stop one VM and prove failover to the remaining healthy VM
 - [ ] Add Azure Monitor / logging
 - [ ] Rebuild the infrastructure using Terraform
@@ -274,6 +274,42 @@ This confirmed that the VM itself had been created successfully despite the depl
 ### Lesson
 
 Always verify the real Azure resource state before deleting or recreating infrastructure after a deployment error. A deployment wrapper can fail even when the target resource has successfully provisioned.
+
+---
+
+## 9. Duplicate NIC NSGs Blocked Application Traffic
+
+After the Load Balancer, backend pool, health probe, and load-balancing rule were configured, the public Load Balancer IP still timed out.
+
+Direct tests to both VM public IPs on port `8000` also timed out, even though the application returned `healthy` from inside each VM.
+
+Further checks confirmed:
+
+- Gunicorn was listening on `0.0.0.0:8000`
+- The application returned `healthy` on each VM private IP
+- UFW was inactive
+- The subnet NSG `nsg-web` allowed application traffic on port `8000`
+- Each VM NIC also had its own VM-specific NSG attached
+
+Because Azure evaluates both subnet-level and NIC-level NSGs, the additional NIC NSGs created an unexpected second security layer.
+
+### Resolution
+
+The VM-specific NIC NSGs were dissociated from both NICs, leaving the shared subnet NSG `nsg-web` as the single security policy for the backend subnet.
+
+After the change:
+
+```text
+VM-01 public IP :8000/health -> healthy
+VM-02 public IP :8000/health -> healthy
+Load Balancer public IP      -> application HTML returned successfully
+```
+
+The Load Balancer successfully served the application from `vm-olu-web-01`.
+
+### Lesson
+
+When troubleshooting Azure connectivity, always inspect the **effective** security rules rather than assuming only the visible subnet NSG applies. Layered NSGs can create unexpected denies even when one NSG appears correct.
 
 ---
 
