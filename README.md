@@ -7,7 +7,7 @@ The goal is to demonstrate practical Azure administration, networking, Linux, tr
 ## Project Status
 
 **Current phase:** Application deployment to Azure VMs  
-**Overall progress:** approximately 74%
+**Overall progress:** approximately 77%
 
 ### Completed
 
@@ -42,7 +42,7 @@ The goal is to demonstrate practical Azure administration, networking, Linux, tr
 - [x] Configured and verified the persistent `systemd` service on `vm-olu-web-02`
 - [x] Both Availability Zone backends now run the app persistently and return `healthy`
 - [ ] Configure Gunicorn/systemd
-- [ ] Create a Standard Public IP
+- [x] Created zone-redundant Standard static Public IP `pip-olu-ha-lb`
 - [ ] Create an Azure Standard Load Balancer
 - [ ] Create the backend pool
 - [ ] Configure the HTTP `/health` probe
