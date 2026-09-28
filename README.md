@@ -7,7 +7,7 @@ The goal is to demonstrate practical Azure administration, networking, Linux, tr
 ## Project Status
 
 **Current phase:** Application deployment to Azure VMs  
-**Overall progress:** approximately 96%
+**Overall progress:** approximately 97%
 
 ### Completed
 
@@ -365,6 +365,8 @@ Server responding: vm-olu-web-02
 This proved that the Azure Load Balancer health probe removed the unavailable backend from traffic and continued serving requests through the healthy VM in the second Availability Zone.
 
 This test demonstrates actual application resilience rather than simply deploying duplicate virtual machines.
+
+VM-01 was then restarted and the `olu-ha-webapp` systemd service was verified as `active`, with `/health` returning `healthy`. This confirmed that the application automatically recovers after a VM restart.
 
 ---
 
