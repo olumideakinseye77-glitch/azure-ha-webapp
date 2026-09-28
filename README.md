@@ -7,7 +7,7 @@ The goal is to demonstrate practical Azure administration, networking, Linux, tr
 ## Project Status
 
 **Current phase:** Application deployment to Azure VMs  
-**Overall progress:** approximately 62%
+**Overall progress:** approximately 67%
 
 ### Completed
 
@@ -36,8 +36,8 @@ The goal is to demonstrate practical Azure administration, networking, Linux, tr
 
 ### In Progress / Next
 
-- [ ] Install the application dependencies on `vm-olu-web-02`
-- [ ] Start Gunicorn on `vm-olu-web-02` and verify `/health`
+- [x] Installed the application dependencies on `vm-olu-web-02`
+- [x] Started Gunicorn on `vm-olu-web-02` and verified `/health` returns `healthy`
 - [ ] Configure persistent systemd services on both Linux VMs
 - [ ] Configure Gunicorn/systemd
 - [ ] Create a Standard Public IP
@@ -74,7 +74,7 @@ flowchart TD
     VM2 --> MON
 ```
 
-The final application will run on two Linux virtual machines in separate Availability Zones. Azure Load Balancer will health-check the application through `/health`. If one VM becomes unhealthy or is deliberately stopped, traffic should continue to the remaining healthy backend.
+Both backend VMs are now serving the application successfully on port `8000`, with `/health` returning `healthy` in Availability Zones 1 and 2. Azure Load Balancer will health-check the application through `/health`. If one VM becomes unhealthy or is deliberately stopped, traffic should continue to the remaining healthy backend.
 
 ---
 
