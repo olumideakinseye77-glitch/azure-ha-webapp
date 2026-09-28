@@ -56,6 +56,8 @@ The goal is to demonstrate practical Azure administration, networking, Linux, tr
   - [x] Created Data Collection Rule `dcr-olu-ha` for performance counters and Syslog
   - [x] Associated `dcr-olu-ha` with both backend VMs
   - [x] Verified Azure Monitor Agent heartbeats from both backend VMs in Log Analytics
+  - [x] Corrected Linux performance counter definitions in `dcr-olu-ha`
+  - [ ] Verify `Perf` records for CPU, memory and disk
 - [ ] Rebuild the infrastructure using Terraform
 - [ ] Add GitHub Actions CI/CD
 - [ ] Complete final architecture and deployment documentation
