@@ -50,6 +50,7 @@ The goal is to demonstrate practical Azure administration, networking, Linux, tr
 - [x] Verified application availability through the Load Balancer public IP
 - [x] Deallocated `vm-olu-web-01` and proved successful failover through the Load Balancer to `vm-olu-web-02`
 - [ ] Add Azure Monitor / logging
+  - [x] Created Log Analytics workspace `law-olu-ha` in UK South with 30-day retention
 - [ ] Rebuild the infrastructure using Terraform
 - [ ] Add GitHub Actions CI/CD
 - [ ] Complete final architecture and deployment documentation
