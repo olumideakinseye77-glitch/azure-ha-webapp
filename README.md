@@ -6,8 +6,8 @@ The goal is to demonstrate practical Azure administration, networking, Linux, tr
 
 ## Project Status
 
-**Current phase:** Azure compute deployment and quota remediation  
-**Overall progress:** approximately 35%
+**Current phase:** Application deployment to Azure VMs  
+**Overall progress:** approximately 60%
 
 ### Completed
 
@@ -25,14 +25,18 @@ The goal is to demonstrate practical Azure administration, networking, Linux, tr
 - [x] Upgraded the subscription to Pay-As-You-Go
 - [x] Identified `Standard_B2s_v2` as the preferred newer-generation VM SKU
 - [x] Confirmed the planned architecture can use Availability Zones 1 and 2
-- [x] Diagnosed the current blocker as a per-VM-family Bsv2 vCPU quota of 0
+- [x] Diagnosed the Bsv2 per-family quota blocker
+- [x] Registered the `Microsoft.Quota` resource provider
+- [x] Increased the UK South `standardBsv2Family` quota to 4 vCPUs
+- [x] Deployed `vm-olu-web-01` in Availability Zone 1
+- [x] Deployed `vm-olu-web-02` in Availability Zone 2
+- [x] Verified both VMs are running in separate Availability Zones
+- [x] Installed Python, Git, Flask dependencies and Gunicorn on `vm-olu-web-01`
 
 ### In Progress / Next
 
-- [ ] Request/increase the UK South `standardBsv2Family` quota to at least 4 vCPUs
-- [ ] Deploy `vm-olu-web-01` in Availability Zone 1
-- [ ] Deploy `vm-olu-web-02` in Availability Zone 2
-- [ ] Install and run the Flask application on both Linux VMs
+- [ ] Install the application dependencies on `vm-olu-web-02`
+- [ ] Run the Flask application through Gunicorn on both Linux VMs
 - [ ] Configure Gunicorn/systemd
 - [ ] Create a Standard Public IP
 - [ ] Create an Azure Standard Load Balancer
@@ -243,7 +247,29 @@ VM-02 = 2 vCPUs
 Total  = 4 Bsv2-family vCPUs
 ```
 
-The UK South `standardBsv2Family` quota therefore needs to be increased to **at least 4 vCPUs** before both backend VMs can run simultaneously.
+The UK South `standardBsv2Family` quota was increased to **4 vCPUs**, allowing both 2-vCPU backend VMs to run simultaneously.
+
+---
+
+## 8. VM-02 SSH-Key Deployment Warning
+
+During the second VM deployment, Azure CLI returned a `PropertyChangeNotAllowed` message for `linuxConfiguration.ssh.publicKeys`.
+
+Instead of deleting the VM immediately, the actual resource state was checked with `az vm show`.
+
+Azure reported:
+
+```text
+ProvisioningState: Succeeded
+PowerState: VM running
+Zone: 2
+```
+
+This confirmed that the VM itself had been created successfully despite the deployment-level error.
+
+### Lesson
+
+Always verify the real Azure resource state before deleting or recreating infrastructure after a deployment error. A deployment wrapper can fail even when the target resource has successfully provisioned.
 
 ---
 
