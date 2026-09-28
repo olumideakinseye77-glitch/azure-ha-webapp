@@ -7,7 +7,7 @@ The goal is to demonstrate practical Azure administration, networking, Linux, tr
 ## Project Status
 
 **Current phase:** Application deployment to Azure VMs  
-**Overall progress:** approximately 70%
+**Overall progress:** approximately 74%
 
 ### Completed
 
@@ -39,7 +39,8 @@ The goal is to demonstrate practical Azure administration, networking, Linux, tr
 - [x] Installed the application dependencies on `vm-olu-web-02`
 - [x] Started Gunicorn on `vm-olu-web-02` and verified `/health` returns `healthy`
 - [x] Configured and verified the persistent `systemd` service on `vm-olu-web-01`
-- [ ] Configure and verify the persistent `systemd` service on `vm-olu-web-02`
+- [x] Configured and verified the persistent `systemd` service on `vm-olu-web-02`
+- [x] Both Availability Zone backends now run the app persistently and return `healthy`
 - [ ] Configure Gunicorn/systemd
 - [ ] Create a Standard Public IP
 - [ ] Create an Azure Standard Load Balancer
