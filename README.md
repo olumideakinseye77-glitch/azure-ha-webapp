@@ -7,7 +7,7 @@ The goal is to demonstrate practical Azure administration, networking, Linux, tr
 ## Project Status
 
 **Current phase:** Application deployment to Azure VMs  
-**Overall progress:** approximately 93%
+**Overall progress:** approximately 96%
 
 ### Completed
 
@@ -48,7 +48,7 @@ The goal is to demonstrate practical Azure administration, networking, Linux, tr
 - [x] Configured HTTP health probe `probe-olu-health` on port `8000` and path `/health`
 - [x] Configured load-balancing rule `rule-http` from frontend port `80` to backend port `8000`
 - [x] Verified application availability through the Load Balancer public IP
-- [ ] Stop one VM and prove failover to the remaining healthy VM
+- [x] Deallocated `vm-olu-web-01` and proved successful failover through the Load Balancer to `vm-olu-web-02`
 - [ ] Add Azure Monitor / logging
 - [ ] Rebuild the infrastructure using Terraform
 - [ ] Add GitHub Actions CI/CD
@@ -346,6 +346,25 @@ This project has already demonstrated several real-world cloud engineering skill
 - Persisting through failed deployments using evidence-driven troubleshooting
 
 The project intentionally documents these challenges because successful cloud engineering is not only about creating resources when everything works first time; it is also about diagnosing why deployments fail and choosing the correct remediation.
+
+---
+
+## High Availability Failover Test
+
+A deliberate failure test was performed after the Load Balancer was fully operational.
+
+`vm-olu-web-01` was taken out of service and the application was requested again through the Load Balancer public IP.
+
+The application remained online and returned:
+
+```text
+System Status: ONLINE
+Server responding: vm-olu-web-02
+```
+
+This proved that the Azure Load Balancer health probe removed the unavailable backend from traffic and continued serving requests through the healthy VM in the second Availability Zone.
+
+This test demonstrates actual application resilience rather than simply deploying duplicate virtual machines.
 
 ---
 
