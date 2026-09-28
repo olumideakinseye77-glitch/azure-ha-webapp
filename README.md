@@ -7,7 +7,7 @@ The goal is to demonstrate practical Azure administration, networking, Linux, tr
 ## Project Status
 
 **Current phase:** Application deployment to Azure VMs  
-**Overall progress:** approximately 84%
+**Overall progress:** approximately 88%
 
 ### Completed
 
@@ -46,7 +46,7 @@ The goal is to demonstrate practical Azure administration, networking, Linux, tr
 - [x] Created Azure Standard Load Balancer `lb-olu-ha` with frontend `fe-olu-ha` and backend pool `be-olu-ha`
 - [x] Attached both VM NICs to backend pool `be-olu-ha`
 - [x] Configured HTTP health probe `probe-olu-health` on port `8000` and path `/health`
-- [ ] Configure the load-balancing rule
+- [x] Configured load-balancing rule `rule-http` from frontend port `80` to backend port `8000`
 - [ ] Test application availability through the Load Balancer
 - [ ] Stop one VM and prove failover to the remaining healthy VM
 - [ ] Add Azure Monitor / logging
