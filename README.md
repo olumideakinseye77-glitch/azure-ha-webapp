@@ -55,6 +55,7 @@ The goal is to demonstrate practical Azure administration, networking, Linux, tr
   - [x] Azure Monitor Agent installed on both backend VMs
   - [x] Created Data Collection Rule `dcr-olu-ha` for performance counters and Syslog
   - [x] Associated `dcr-olu-ha` with both backend VMs
+  - [x] Verified Azure Monitor Agent heartbeats from both backend VMs in Log Analytics
 - [ ] Rebuild the infrastructure using Terraform
 - [ ] Add GitHub Actions CI/CD
 - [ ] Complete final architecture and deployment documentation
