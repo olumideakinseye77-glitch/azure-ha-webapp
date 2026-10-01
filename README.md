@@ -426,23 +426,20 @@ The deployment workflow uses **GitHub OIDC federation with Microsoft Entra ID**,
 
 Deployment runs in a rolling sequence:
 
-```text
-GitHub Actions
-      |
-      v
-Azure login using OIDC
-      |
-      v
-Deploy VM-01
-      |
-      v
-Load Balancer health check
-      |
-      v
-Deploy VM-02
-      |
-      v
-Final Load Balancer health check
+```mermaid
+flowchart TD
+    DEV[Push / Manual Deployment Trigger] --> GHA[GitHub Actions]
+    GHA --> OIDC[GitHub OIDC Token]
+    OIDC --> ENTRA[Microsoft Entra ID]
+    ENTRA --> AZ[Azure Authentication]
+
+    AZ --> VM1[Deploy VM-01]
+    VM1 --> H1[Verify /health]
+    H1 --> LB1[Verify Load Balancer]
+    LB1 --> VM2[Deploy VM-02]
+    VM2 --> H2[Verify /health]
+    H2 --> LB2[Final Load Balancer Health Check]
+    LB2 --> DONE[Deployment Complete]
 ```
 
 The CD workflow was executed successfully end to end. OIDC authentication, both VM deployment stages, and both Load Balancer health checks completed successfully.
