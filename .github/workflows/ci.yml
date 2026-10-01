@@ -1,0 +1,70 @@
+name: CI - App and Terraform
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  app-test:
+    name: Flask health check
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: app/requirements.txt
+
+      - name: Install application dependencies
+        run: pip install -r app/requirements.txt
+
+      - name: Test Flask health endpoint
+        working-directory: app
+        run: |
+          python - <<'PY'
+          from app import app
+
+          client = app.test_client()
+          response = client.get("/health")
+
+          assert response.status_code == 200, response.status_code
+          assert response.get_data(as_text=True) == "healthy"
+          print("Flask /health check passed")
+          PY
+
+  terraform-check:
+    name: Terraform format and validate
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: infra
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: "1.16.4"
+
+      - name: Terraform format check
+        run: terraform fmt -check -recursive
+
+      - name: Terraform init for validation
+        run: terraform init -backend=false
+
+      - name: Terraform validate
+        run: terraform validate
