@@ -6,8 +6,8 @@ The goal is to demonstrate practical Azure administration, networking, Linux, tr
 
 ## Project Status
 
-**Current phase:** Application deployment to Azure VMs  
-**Overall progress:** approximately 97%
+**Current phase:** Complete — portfolio-ready Azure HA / DevOps project  
+**Overall progress:** 100%
 
 ### Completed
 
@@ -34,14 +34,14 @@ The goal is to demonstrate practical Azure administration, networking, Linux, tr
 - [x] Installed Python, Git, Flask dependencies and Gunicorn on `vm-olu-web-01`
 - [x] Started Gunicorn on `vm-olu-web-01` and verified `/health` returns `healthy`
 
-### In Progress / Next
+### Completed Build
 
 - [x] Installed the application dependencies on `vm-olu-web-02`
 - [x] Started Gunicorn on `vm-olu-web-02` and verified `/health` returns `healthy`
 - [x] Configured and verified the persistent `systemd` service on `vm-olu-web-01`
 - [x] Configured and verified the persistent `systemd` service on `vm-olu-web-02`
 - [x] Both Availability Zone backends now run the app persistently and return `healthy`
-- [ ] Configure Gunicorn/systemd
+- [x] Configure Gunicorn/systemd
 - [x] Created zone-redundant Standard static Public IP `pip-olu-ha-lb`
 - [x] Created Azure Standard Load Balancer `lb-olu-ha` with frontend `fe-olu-ha` and backend pool `be-olu-ha`
 - [x] Attached both VM NICs to backend pool `be-olu-ha`
@@ -59,13 +59,17 @@ The goal is to demonstrate practical Azure administration, networking, Linux, tr
   - [x] Corrected Linux performance counter definitions in `dcr-olu-ha`
   - [x] Verified Azure Monitor Heartbeat and Syslog ingestion from both backend VMs
   - [ ] `Perf` records remain pending verification and are documented as a monitoring troubleshooting item
-- [ ] Rebuild the infrastructure using Terraform
-- [ ] Add GitHub Actions CI/CD
-- [ ] Complete final architecture and deployment documentation
+- [x] Define and import the live Azure infrastructure with Terraform
+- [x] Achieve a clean Terraform plan with no infrastructure drift
+- [x] Add GitHub Actions CI for Flask health checks and Terraform format/validation
+- [x] Configure GitHub-to-Azure OIDC authentication without a stored Azure client secret
+- [x] Add a rolling CD workflow across both backend VMs
+- [x] Verify Load Balancer health between VM deployments and after the final deployment
+- [x] Complete final architecture and deployment documentation
 
 ---
 
-## Target Architecture
+## Architecture
 
 ```mermaid
 flowchart TD
@@ -85,7 +89,7 @@ flowchart TD
     VM2 --> MON
 ```
 
-Both backend VMs are now serving the application successfully on port `8000`, with `/health` returning `healthy` in Availability Zones 1 and 2. Azure Load Balancer will health-check the application through `/health`. If one VM becomes unhealthy or is deliberately stopped, traffic should continue to the remaining healthy backend.
+Both backend VMs serve the application on port `8000`, with `/health` returning `healthy` in Availability Zones 1 and 2. Azure Load Balancer health-checks the application through `/health`. A deliberate failover test proved that when one backend was stopped, traffic continued through the healthy VM in the second Availability Zone.
 
 ---
 
@@ -121,11 +125,11 @@ healthy
 | Subnet CIDR | `10.0.1.0/24` |
 | Network Security Group | `nsg-web` |
 | Application Port | TCP `8000` |
-| Planned VM Zone 1 | `vm-olu-web-01` |
-| Planned VM Zone 2 | `vm-olu-web-02` |
-| Preferred VM Size | `Standard_B2s_v2` |
+| VM Zone 1 | `vm-olu-web-01` |
+| VM Zone 2 | `vm-olu-web-02` |
+| VM Size | `Standard_B2s_v2` |
 
-> The current port 8000 NSG rule is intentionally broad for initial testing. It will be tightened when the final Load Balancer architecture is completed.
+> **Lab security note:** TCP port `8000` remains broadly reachable for portfolio testing, and both VMs currently retain public IPs. A production hardening step would remove direct VM public exposure and restrict backend traffic to the intended load-balancer/private-network path.
 
 ---
 
@@ -342,7 +346,7 @@ flowchart TD
 
 ---
 
-## Engineering Lessons So Far
+## Engineering Lessons
 
 This project has already demonstrated several real-world cloud engineering skills:
 
@@ -396,7 +400,66 @@ The `Perf` table remained empty after the Linux performance-counter definitions 
 
 ---
 
-## Planned Technologies
+## Infrastructure as Code and CI/CD
+
+The live Azure environment was brought under Terraform management by defining the existing resources in code and importing them into Terraform state.
+
+Terraform now represents the networking, Load Balancer, VM, monitoring, and Azure Monitor Agent resources used by the project. After the imports and configuration were aligned with the live environment, the final Terraform plan showed no infrastructure drift.
+
+### Continuous Integration
+
+GitHub Actions runs automated checks against the application and Terraform configuration.
+
+The CI workflow:
+
+1. Installs the Python application dependencies.
+2. Tests the Flask `/health` endpoint.
+3. Checks Terraform formatting.
+4. Initializes Terraform without a backend for validation.
+5. Runs `terraform validate`.
+
+The CI workflow completed successfully.
+
+### Continuous Deployment
+
+The deployment workflow uses **GitHub OIDC federation with Microsoft Entra ID**, avoiding a long-lived Azure client secret in GitHub.
+
+Deployment runs in a rolling sequence:
+
+```text
+GitHub Actions
+      |
+      v
+Azure login using OIDC
+      |
+      v
+Deploy VM-01
+      |
+      v
+Load Balancer health check
+      |
+      v
+Deploy VM-02
+      |
+      v
+Final Load Balancer health check
+```
+
+The CD workflow was executed successfully end to end. OIDC authentication, both VM deployment stages, and both Load Balancer health checks completed successfully.
+
+### CI/CD Troubleshooting
+
+The first OIDC attempt failed because GitHub presented an immutable repository-ID subject rather than the older name-only subject format. The Microsoft Entra federated identity credential was updated to match the exact subject emitted by GitHub Actions.
+
+### Terraform State and Secrets
+
+Terraform state is excluded from Git through `.gitignore`, and no state file is committed to the repository. No Azure client secret is stored in the repository; Azure authentication for deployment uses OIDC federation.
+
+For a production or team implementation, the next infrastructure improvement would be a remote Terraform backend such as Azure Storage with appropriate locking and access controls.
+
+---
+
+## Technologies Used
 
 - Microsoft Azure
 - Azure Virtual Machines
@@ -416,9 +479,9 @@ The `Perf` table remained empty after the Linux performance-counter definitions 
 
 ---
 
-## Final Portfolio Goal
+## What This Project Demonstrates
 
-At completion, this repository will demonstrate the ability to:
+This repository demonstrates the ability to:
 
 1. Build and deploy a Linux-hosted web application on Azure.
 2. Design for high availability across multiple Availability Zones.
