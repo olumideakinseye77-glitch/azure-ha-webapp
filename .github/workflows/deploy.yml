@@ -1,0 +1,64 @@
+name: CD - Deploy to Azure VMs
+
+on:
+  workflow_dispatch:
+
+permissions:
+  id-token: write
+  contents: read
+
+env:
+  AZURE_CLIENT_ID: e5a782ab-3987-4e32-822c-aceff030925b
+  AZURE_TENANT_ID: f7a4a0bf-cedb-46e1-aeae-d875e38e3dbf
+  AZURE_SUBSCRIPTION_ID: 0be06fbd-8a1c-4544-8855-fcea8dfd8a76
+  RESOURCE_GROUP: rg-olu-ha-webapp
+
+jobs:
+  deploy:
+    name: Rolling deployment
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Azure login with OIDC
+        uses: azure/login@v3
+        with:
+          client-id: ${{ env.AZURE_CLIENT_ID }}
+          tenant-id: ${{ env.AZURE_TENANT_ID }}
+          subscription-id: ${{ env.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Deploy VM-01
+        run: |
+          az vm run-command invoke \
+            --resource-group "$RESOURCE_GROUP" \
+            --name vm-olu-web-01 \
+            --command-id RunShellScript \
+            --scripts "set -e
+          cd /home/azureuser/azure-ha-webapp
+          sudo -u azureuser git pull origin main
+          sudo -u azureuser /home/azureuser/azure-ha-webapp/app/venv/bin/pip install -r /home/azureuser/azure-ha-webapp/app/requirements.txt
+          sudo systemctl restart olu-ha-webapp
+          sleep 5
+          curl --fail http://127.0.0.1:8000/health"
+
+      - name: Verify load balancer after VM-01
+        run: curl --fail --retry 5 --retry-delay 5 http://74.177.237.201/health
+
+      - name: Deploy VM-02
+        run: |
+          az vm run-command invoke \
+            --resource-group "$RESOURCE_GROUP" \
+            --name vm-olu-web-02 \
+            --command-id RunShellScript \
+            --scripts "set -e
+          cd /home/azureuser/azure-ha-webapp
+          sudo -u azureuser git pull origin main
+          sudo -u azureuser /home/azureuser/azure-ha-webapp/app/venv/bin/pip install -r /home/azureuser/azure-ha-webapp/app/requirements.txt
+          sudo systemctl restart olu-ha-webapp
+          sleep 5
+          curl --fail http://127.0.0.1:8000/health"
+
+      - name: Final load balancer health check
+        run: curl --fail --retry 5 --retry-delay 5 http://74.177.237.201/health
