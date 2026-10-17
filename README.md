@@ -1,13 +1,12 @@
 # Azure Highly Available Web Application
 
-A hands-on Azure/DevOps portfolio project to build and operate a highly available Python web application on Microsoft Azure across multiple Availability Zones.
+My first Azure Cloud Engineering portfolio project: building and operating a Python web application across two Azure Availability Zones.
 
 The goal is to demonstrate practical Azure administration, networking, Linux, troubleshooting, high availability, monitoring, Infrastructure as Code, and CI/CD skills.
 
 ## Project Status
 
-**Current phase:** Complete — portfolio-ready Azure HA / DevOps project  
-**Overall progress:** 100%
+**Status:** Core build and documented deployment tests complete. Performance-counter ingestion remains an open monitoring item.
 
 ### Completed
 
@@ -41,7 +40,7 @@ The goal is to demonstrate practical Azure administration, networking, Linux, tr
 - [x] Configured and verified the persistent `systemd` service on `vm-olu-web-01`
 - [x] Configured and verified the persistent `systemd` service on `vm-olu-web-02`
 - [x] Both Availability Zone backends now run the app persistently and return `healthy`
-- [x] Configure Gunicorn/systemd
+- [x] Configured Gunicorn and systemd
 - [x] Created zone-redundant Standard static Public IP `pip-olu-ha-lb`
 - [x] Created Azure Standard Load Balancer `lb-olu-ha` with frontend `fe-olu-ha` and backend pool `be-olu-ha`
 - [x] Attached both VM NICs to backend pool `be-olu-ha`
@@ -97,7 +96,7 @@ Both backend VMs serve the application on port `8000`, with `/health` returning 
 
 The application is a lightweight Python Flask web application running on port `8000`.
 
-It displays the hostname of the responding server so the final deployment can demonstrate that requests are being served by the highly available backend tier.
+It displays the hostname of the responding server to show that requests are being served by the highly available backend tier.
 
 ### Health Endpoint
 
@@ -486,6 +485,12 @@ This repository demonstrates the ability to:
 4. Use health probes and load balancing.
 5. Validate resilience by deliberately removing a backend VM.
 6. Monitor infrastructure and application health.
-7. Reproduce infrastructure using Terraform.
+7. Define existing infrastructure in Terraform and reconcile it through imports.
 8. Automate delivery with GitHub Actions.
 9. Troubleshoot real Azure subscription, SKU, zone, and quota limitations.
+
+## Learning progression
+
+I built this lab to develop practical Azure administration, Linux, networking and troubleshooting skills while working towards Azure Cloud Engineering. It is a portfolio learning environment, not professional production experience.
+
+Next, I wanted to challenge myself with a more complex network. [Project 2: Azure Enterprise Network](../azure-enterprise-network) extends this foundation into hub-and-spoke routing, private connectivity, DNS and deliberate network failure testing.
