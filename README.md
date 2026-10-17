@@ -493,4 +493,4 @@ This repository demonstrates the ability to:
 
 I built this lab to develop practical Azure administration, Linux, networking and troubleshooting skills while working towards Azure Cloud Engineering. It is a portfolio learning environment, not professional production experience.
 
-Next, I wanted to challenge myself with a more complex network. [Project 2: Azure Enterprise Network](../azure-enterprise-network) extends this foundation into hub-and-spoke routing, private connectivity, DNS and deliberate network failure testing.
+Next, I wanted to challenge myself with a more complex network. [Project 2: Azure Enterprise Network](https://github.com/olumideakinseye77-glitch/azure-enterprise-network) extends this foundation into hub-and-spoke routing, private connectivity, DNS and deliberate network failure testing.
