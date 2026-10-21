@@ -1,5 +1,8 @@
 # Azure Highly Available Web Application
 
+[Portfolio home](https://github.com/olumideakinseye77-glitch/it-cloud-portfolio) · [All Azure projects](https://github.com/olumideakinseye77-glitch/it-cloud-portfolio/tree/main/azure-projects)
+
+
 My first Azure Cloud Engineering portfolio project: building and operating a Python web application across two Azure Availability Zones.
 
 The goal is to demonstrate practical Azure administration, networking, Linux, troubleshooting, high availability, monitoring, Infrastructure as Code, and CI/CD skills.
